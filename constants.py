@@ -12,6 +12,16 @@ It represents the following scenario:
         - Jane is a member in asset '4' and therefore has 'admin' permissions on the repo
 """
 
+hashalg="sha512"  #md5 or sha512
+server="lblxscap01.child1.lwtest.corp"
+#pmulrestserver="prlxscap01.totalnetsolutions.net"
+verbose=1
+appId="entitle"
+appKey="d48e6d06-cee7-4028-b449-9fee608cfde7"
+port=24351
+#appkey="8a81c8e4-d0f0-4b2c-9f79-0a13b66d93d5" #prod
+curlopts="-4 --insecure"
+
 GROUP_ROLE_OPTIONS = [
     {'code': 'member', 'display_name': 'Member'},
     {'code': 'admin', 'display_name': 'Admin'},

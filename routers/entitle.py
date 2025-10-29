@@ -1,9 +1,9 @@
 from fastapi import APIRouter
 
-from constants import ASSETS, ACTORS, NEW_ACTOR
 from logger import logger
 from models import AccessRequestBody, CreateActorRequestBody, DeleteActorRequestBody
 from utils.permissions import retrieve_asset_permissions, retrieve_all_permissions
+import pmulrest
 
 router = APIRouter()
 
@@ -16,13 +16,13 @@ https://docs.beyondtrust.com/entitle/docs/entitle-integration-rest"""
 @router.get('/get_assets')
 async def get_assets():
     logger.debug('get_assets called')
-    return {'data': {'assets': ASSETS}}
+    return {'data': {'assets': pmulrest.getassets()}}
 
 
 @router.get('/get_actors')
 async def get_actors():
     logger.debug('get_actors called')
-    return {'data': {'actors': ACTORS}}
+    return {'data': {'actors': pmulrest.getactors()}}
 
 
 @router.get('/get_asset_permissions/{asset_id}')

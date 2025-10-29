@@ -1,0 +1,347 @@
+openapi: 3.0.1
+info:
+  title: Remote Adapter Swagger
+  description: This is our api example
+  termsOfService: <http://swagger.io/terms/>
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: <http://swagger.io>
+servers:
+- url: <https://yourhost.com/>
+- url: <http://yourhost.com/>
+paths:
+  /get_assets:
+    get:
+      tags:
+      - get_assets
+      summary: Get all assets
+      description: Get all assets
+      operationId: get_asssets
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  next:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      assets:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Asset'
+        400:
+          description: Invalid status value
+          content: {}
+  /get_actors:
+    get:
+      tags:
+      - get_actors
+      summary: Get all actors
+      description: Get all actors
+      operationId: get_actors
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  next:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      actors:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Actor'
+        400:
+          description: Invalid status value
+          content: {}
+  /get_all_permissions:
+    get:
+      tags:
+      - get_all_permissions
+      summary: gets all permissions
+      description: Get all permissions
+      operationId: get_all_permissions
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: string
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  next:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      actors_permissions:
+                        items:
+                          type: object
+                          additionalProperties:
+                            $ref: '#/components/schemas/ActorPermission'
+                        type: array
+                        description: map[asset_id] -> [Property]
+                        additionalProperties:
+                          $ref: '#/components/schemas/ActorPermission'
+                      assets_permissions:
+                        items:
+                          type: object
+                          additionalProperties:
+                            $ref: '#/components/schemas/AssetPermission'
+                        type: array
+                        description: map[asset_id] -> [Property]
+                        additionalProperties:
+                          $ref: '#/components/schemas/AssetPermission'
+        400:
+          description: Invalid status value
+          content: {}
+  /get_asset_permissions/{asset_identifier}:
+    get:
+      tags:
+      - get_asset_permissions
+      summary: gets asset permissions
+      description: Get asset permissions
+      operationId: get_asset_permissions
+      parameters:
+      - name: page
+        in: query
+        schema:
+          type: string
+      - name: asset_identifier
+        in: path
+        schema:
+          type: string
+        required: true
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  next:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      actors_permissions:
+                        items:
+                          $ref: '#/components/schemas/ActorPermission'
+                        type: array
+                      assets_permissions:
+                        items:
+                            $ref: '#/components/schemas/AssetPermission'
+                        type: array
+        400:
+          description: Invalid status value
+          content: {}
+  /give_access:
+    post:
+      tags:
+      - give_access
+      summary: give access
+      description: Give access
+      operationId: give_access
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                asset:
+                  $ref: '#/components/schemas/Asset'
+                actor_identifier:
+                  type: string
+                role_code:
+                  type: string
+        required: false
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+        400:
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: body
+  /revoke_access:
+    post:
+      tags:
+      - revoke_access
+      summary: revoke access
+      description: Revoke access
+      operationId: revoke_access
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                asset:
+                  $ref: '#/components/schemas/Asset'
+                actor_identifier:
+                  type: string
+                role_code:
+                  type: string
+        required: false
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+        400:
+          description: Invalid input
+          content: {}
+      x-codegen-request-body-name: body
+  /check_config:
+    post:
+      tags:
+      - check_config
+      summary: check config
+      description: Check config
+      operationId: check_config
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                config:
+                  type: object
+        required: true
+      responses:
+        200:
+          description: Valid configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      valid:
+                        type: boolean
+        400:
+          description: Invalid configuration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      valid:
+                        type: boolean
+                        default: false
+                  reason:
+                    type: string
+      x-codegen-request-body-name: body
+components:
+  schemas:
+    Actor:
+      type: object
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        email:
+          type: string
+        last_used:
+          type: string
+          format: date-time
+      required: [identifier, name, type, email]
+      xml:
+        name: Actor
+    Role-Option:
+      type: object
+      properties:
+        code:
+          type: string
+        display_name:
+          type: string
+        available:
+          type: boolean
+        permissions:
+          type: array
+          items:
+            type: string
+      xml:
+        name: Role-Option
+    Asset:
+      type: object
+      properties:
+        identifier:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+        role_options:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role-Option'
+      xml:
+        name: Asset
+    ActorPermission:
+      type: object
+      properties:
+        actor_id:
+          type: string
+        role_code:
+          type: string
+        direct_member:
+          type: boolean
+      xml:
+        name: ActorPermission
+    AssetPermission:
+      type: object
+      properties:
+        asset_id:
+          type: string
+        role_code:
+          type: string
+      xml:
+        name: AssetPermission
+
