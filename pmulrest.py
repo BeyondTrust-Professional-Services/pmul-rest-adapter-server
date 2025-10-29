@@ -13,7 +13,7 @@ def gen_hmac(appkey: str, message: str) -> str:
     hmac_signature = hmac.new(
         bytes(appkey,'ascii'),
         bytes(message,'ascii'),
-        hashlib.md5
+        hashlib.sha512
     ).hexdigest()
     return hmac_signature
 
@@ -26,7 +26,7 @@ def gen_message(appId: str) -> str:
 
 # Setup the parameters for the REST API call
 
-def getassets(appKey="", appId="", verbose=0, hostname=None):
+def getassets(appKey=constants.appKey, appId=constants.appId, verbose=0, hostname=None):
     """Get client license information.
     
     Args:
@@ -41,7 +41,7 @@ def getassets(appKey="", appId="", verbose=0, hostname=None):
     if not appKey or not appId:
         raise ValueError("Invalid input values.")
     message = gen_message(appId)
-    url = f'https://{constants.server}:{constants.port}/pbrest/REST/v2.0/license/clients'
+    url = f'https://{constants.server}:{constants.port}/REST/v2.0/license/clients'
     params = {
         'appid': appId,
         'timestamp': int(time.time()),
@@ -110,7 +110,7 @@ def get_policy_list(appKey=constants.appKey, appId=constants.appId, path="/opt/p
     if not appKey or not appId:
         raise ValueError("Invalid input values.")
     message = gen_message(appId)
-    url = f'https://{constants.server}:{constants.port}/pbrest/REST/policies'
+    url = f'https://{constants.server}:{constants.port}/REST/v2.0/policies'
     params = {
         'appid': appId,
         'timestamp': int(time.time()),
@@ -142,7 +142,7 @@ def get_policy_content(appKey=constants.appKey, appId=constants.appId, file_path
     if not appKey or not appId or not file_path:
         raise ValueError("Invalid input values.")
     message = gen_message(appId)
-    url = f'https://{constants.server}:{constants.port}/pbrest/REST/policies'
+    url = f'https://{constants.server}:{constants.port}/REST/v2.0/policies'
     params = {
         'appid': appId,
         'timestamp': int(time.time()),
